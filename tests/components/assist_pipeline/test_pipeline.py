@@ -1615,6 +1615,33 @@ async def test_pipeline_language_used_instead_of_conversation_language(
             8,
             "hello, how are you? I'm doing well, thank you.",
         ),
+        # Toolcall THEN then multiple chunks of text
+        (
+            (
+                {
+                    "tool_calls": [
+                        llm.ToolInput(
+                            tool_name="test_tool",
+                            tool_args={},
+                            id="test_tool_id",
+                        )
+                    ],
+                },
+                [
+                    "Setting",
+                    " Away mode to off.",
+                ],
+                [
+                    "Away mode is now",
+                ],
+                [
+                    " off.",
+                ],
+            ),
+            # 1 chunk before tool call, then 2 after
+            3,
+            "Setting Away mode to off.Away mode is now off.",
+        ),
     ],
 )
 async def test_chat_log_tts_streaming(
